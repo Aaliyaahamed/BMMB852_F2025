@@ -14,7 +14,7 @@ cd $DIR
 
 ## 2) GFF3 file from Ensemble
 I am downloading the GGF3 file of the organism.\
-(*Mola mola* is the world’s heaviest bony fish — [Wikipedia](https://en.wikipedia.org/wiki/Ocean_sunfish))
+(*Mola mola* is the world’s heaviest bony fish:[Wikipedia](https://en.wikipedia.org/wiki/Ocean_sunfish))
 
 The assembly used here is ASM169857v1.\
 Use `gunzip` to unzip the file.
