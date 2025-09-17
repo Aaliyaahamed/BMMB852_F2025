@@ -3,7 +3,8 @@
 
 ---
 ## 1) Working directory
-Since, I haver to replicate this analysis, I am defining the path to my wokring directory. The name of my working directory is "ASSIGNMENT_2"
+Since, I have to replicate this analysis, I am defining the path to my wokring directory. The name of my working directory is "ASSIGNMENT_2"
+(Change the traditional YOURPATH to some other name for feasibility: As Dr. Albert said)
 
 ```bash
 DIR=YOURPATH/02_Assignment2
@@ -51,7 +52,7 @@ Result: 619,591 features
 
 Rank feature types:
 ```bash
-cut -f3 $GFF | grep -v "^#" | sort | uniq -c | sort -r > all_features_ranked.txt
+cut -f3 $GFF | grep -v "^#" | sort | uniq -c | sort -n > all_features_ranked.txt
 ```
 Top 10 features:
 ```bash
