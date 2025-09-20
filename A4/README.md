@@ -13,7 +13,7 @@ It generated and analyzed 99 complete Ebola virus genomes from 78 patients.
 The study provides key accession numbers that we can use to reproduce and visualize the genomic data_
 
 
-![Ebola virus illustration](image-3.png)
+![Ebola virus illustration](images/image-3.png)
 ## 2)Identifing the accession numbers for the genome 
 
 We use these accession numbers because they serve as unique, permanent identifiers in NCBI. Anyone can rerun the commands below with the same IDs to reproduce the results.
@@ -131,7 +131,7 @@ The Ebola Makona genome encodes **seven major genes**. Coordinates were extracte
    - Biological importance: The L gene encodes the central enzyme of the replication complex. Because of its size and multifunctional role, it is a potential drug target, as inhibitors of RdRp could theoretically halt viral propagation (https://pubmed.ncbi.nlm.nih.gov/10073695/)
 
 
-   ![Ebola virus structure and genome](image-7.png)
+   ![Ebola virus structure and genome](images/image-7.png)
    **Figure 1.** Ebolavirus genome and protein layout.  
 The schematic shows the order of genes (3'-leader → NP → VP35 → VP40 → GP → VP30 → VP24 → L → 5'-trailer) and highlights the proteins they encode.
 
@@ -143,19 +143,19 @@ The schematic shows the order of genes (3'-leader → NP → VP35 → VP40 → G
 
 During the workflow, the initial attempt to download the annotation file (`ebola.gb`) using **efetch** produced a 0 KB empty file. This happened because not all viral genomes in NCBI provide GFF or GenBank annotations through efetch. To resolve this, I manually downloaded the annotation file from the NCBI Nucleotide entry for **KM233118**.  The corrected file (`ebola.gb`) contained full feature annotations (genes, CDS, products). This file, together with the genome sequence (`ebola.fasta`), was then successfully loaded into IGV for visualization.
 
-Fig 2: ![NP gene visualization](image.png)
+Fig 2: ![NP gene visualization](images/image.png)
 The above image shows: The NP gene is located near the 5′ end of the genome (coordinates ~349–2568 bp). It encodes the nucleoprotein, which encapsidates the viral RNA genome, forming the nucleocapsid. This protein is essential for viral replication and transcription because it stabilizes and protects the RNA, and provides the framework for polymerase activity.  The IGV snapshot confirms that NP is a compact coding region with no introns, reflecting the dense, efficient organization of the Ebola virus genome.
 
 Fig 3: 
-![IGV_Ebola_NP_VP35_genomic_region](image-2.png)This visualization directly demonstrates that Ebola virus has a densely packed genome. Genes like NP and VP35 are separated by only a few nucleotides (sometimes overlapping regulatory regions), showing that nearly all of the ~19 kb genome is coding. This explains the efficiency of Ebola’s genome in encoding multiple essential proteins within a small sequence.
+![IGV_Ebola_NP_VP35_genomic_region](images/image-2.png)This visualization directly demonstrates that Ebola virus has a densely packed genome. Genes like NP and VP35 are separated by only a few nucleotides (sometimes overlapping regulatory regions), showing that nearly all of the ~19 kb genome is coding. This explains the efficiency of Ebola’s genome in encoding multiple essential proteins within a small sequence.
 The NP and VP35 genes are among the first transcribed in the Ebola virus genome and illustrate the compactness of viral organization. The NP gene encodes the nucleoprotein, which encapsidates the viral RNA genome, protecting it from degradation and forming the ribonucleoprotein complex essential for replication. Immediately downstream, the VP35 gene encodes a multifunctional protein that acts as both a polymerase cofactor and a potent antagonist of the host interferon response. In the Ebola genome, NP and VP35 are separated by only a few nucleotides, and in some strains their regulatory signals even overlap. This tight arrangement highlights how the virus maximizes coding capacity within a relatively small genome of ~19 kb, minimizing non-coding space. Such proximity also has implications for transcriptional regulation, as transcriptional start/stop signals are shared or closely packed, potentially influencing gene expression levels. Previous studies have shown that VP35’s interferon-antagonist function is critical for viral pathogenicity, while NP provides the structural foundation for viral replication complexes (Basler et al., 2003; Mühlberger, 2007).
 
 Fig 4: 
-![Visualization of the boundary between NP and VP35 genes in the Ebola virus genome](image-5.png)
+![Visualization of the boundary between NP and VP35 genes in the Ebola virus genome](images/image-5.png)
 This image shows the precise region (~2910–2960 bp) where NP terminates and VP35 begins. The absence of intergenic space, with transcriptional stop and start signals immediately adjacent, demonstrates the genome’s extreme compactness. Such tight packing maximizes coding efficiency within the 19 kb genome, while also suggesting that mutations in these boundary regions could influence both genes simultaneously
 
 Fig 5: 
-![Visualization of the L gene (RNA-dependent RNA polymerase) in the Ebola virus genome](image-6.png)
+![Visualization of the L gene (RNA-dependent RNA polymerase) in the Ebola virus genome](images/image-6.png)
 The screenshot above shows the L gene, which encodes the RNA-dependent RNA polymerase, the key enzyme responsible for transcription and replication of the Ebola virus genome. This gene occupies almost the entire 3′ end of the genome, reflecting its large size relative to the other viral genes. The visualization confirms that the Ebola genome is densely packed with coding sequences, with the L gene being by far the largest.
 
 ## 9) Thought Question
