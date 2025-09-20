@@ -12,8 +12,8 @@ _This paper investigates the 2014 West African Ebola outbreak.
 It generated and analyzed 99 complete Ebola virus genomes from 78 patients.  
 The study provides key accession numbers that we can use to reproduce and visualize the genomic data_
 
-![alt text](image-4.png)
-![https://www.science.org/doi/full/10.1126/science.1259657](image-3.png)
+
+![Ebola virus illustration](image-3.png)
 ## 2)Identifing the accession numbers for the genome 
 
 We use these accession numbers because they serve as unique, permanent identifiers in NCBI. Anyone can rerun the commands below with the same IDs to reproduce the results.
@@ -131,7 +131,7 @@ The Ebola Makona genome encodes **seven major genes**. Coordinates were extracte
    - Biological importance: The L gene encodes the central enzyme of the replication complex. Because of its size and multifunctional role, it is a potential drug target, as inhibitors of RdRp could theoretically halt viral propagation (https://pubmed.ncbi.nlm.nih.gov/10073695/)
 
 
-   ![alt text](image-7.png)
+   ![Ebola virus structure and genome](image-7.png)
    **Figure 1.** Ebolavirus genome and protein layout.  
 The schematic shows the order of genes (3'-leader → NP → VP35 → VP40 → GP → VP30 → VP24 → L → 5'-trailer) and highlights the proteins they encode.
 
