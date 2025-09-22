@@ -1,4 +1,4 @@
-# BMMB852_F2025
+
 
 # 🧬 BMMB 852 – Applied Bioinformatics
 
