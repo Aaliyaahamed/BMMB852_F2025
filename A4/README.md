@@ -27,16 +27,26 @@ After reviewing the paper (*Gire et al., 2014*), exploring supplementary materia
 
 Initially, we attempted to use `efetch`, but no files were retrieved (empty files). Therefore, we downloaded manually from NCBI:
 
-1. **Genome sequence (FASTA):**  
-   - From NCBI Nucleotide [KM233118](https://www.ncbi.nlm.nih.gov/nuccore/KM233118)  
-   
- We created a working directory:
+### Define a working directory 
 ```bash
-mkdir -p /mnt/d/BMMB852_F2025/A4/EbolaGenomes
-mv sequence.fasta ebola.fasta
-mv sequence.gb    ebola.gb
+DATA_DIR=/mnt/d/BMMB852_F2025/A4/EbolaGenomes
+mkdir -p $DATA_DIR
+cd $DATA_DIR
 ```
-Now, the folder has ebola.fasta and ebola.gb
+### Define accession and output file prefix
+```bash
+ACC=KM233118
+MYFILE=ebola  
+```
+### _Manual downloads were placed in the folder as sequence.fasta and sequence.gb_
+
+### Rename them consistently to use in downstream analysis
+```bash
+
+mv sequence.fasta ${MYFILE}.fasta
+
+mv sequence.gb    ${MYFILE}.gb
+```
 
 ## 4) Genome Size
 
@@ -139,7 +149,7 @@ The schematic shows the order of genes (3'-leader → NP → VP35 → VP40 → G
 
 
 ## 8) IGV
-### Note on Annotation File
+
 
 During the workflow, the initial attempt to download the annotation file (`ebola.gb`) using **efetch** produced a 0 KB empty file. This happened because not all viral genomes in NCBI provide GFF or GenBank annotations through efetch. To resolve this, I manually downloaded the annotation file from the NCBI Nucleotide entry for **KM233118**.  The corrected file (`ebola.gb`) contained full feature annotations (genes, CDS, products). This file, together with the genome sequence (`ebola.fasta`), was then successfully loaded into IGV for visualization.
 
@@ -159,4 +169,7 @@ Fig 5:
 The screenshot above shows the L gene, which encodes the RNA-dependent RNA polymerase, the key enzyme responsible for transcription and replication of the Ebola virus genome. This gene occupies almost the entire 3′ end of the genome, reflecting its large size relative to the other viral genes. The visualization confirms that the Ebola genome is densely packed with coding sequences, with the L gene being by far the largest.
 
 ## 9) Thought Question
-For this weeks assignment, we primarily worked with KM233118 (Makona strain, Sierra Leone 2014) as the reference genome, with AF086833 (Mayinga strain, Zaire 1976) serving as a historic baseline. However, several alternative Ebola virus genome builds are available in NCBI that could be useful for answering different questions. Examples include NC_002549.1 (Mayinga, 1976, RefSeq), KJ660346.2 (Guinea, early 2014 outbreak), KR534588.1 (Liberia, 2014 mid-outbreak), and KY425633.1 (Sierra Leone, 2015 late outbreak). Using these alternative genomes allows for comparative analyses across both geography and time. For instance, comparing Guinea, Liberia, and Sierra Leone isolates helps us investigate whether distinct mutations correlate with regional transmission, while comparing early (2014) and later (2015) genomes can highlight how rapidly the virus accumulated mutations during the epidemic. Prior studies, such as Gire et al, 2014 (https://www.science.org/doi/10.1126/science.1259657), showed that two distinct lineages introduced from Guinea seeded the Sierra Leone outbreak, while later work by Hoenen et al., 2015 (https://www.science.org/doi/10.1126/science.aaa5646) emphasized that many mutations were consistent with incomplete purifying selection. By extending analyses to genes like GP (glycoprotein) and L (RNA polymerase), we can ask whether mutations had functional consequences: for example, GP changes that might influence vaccine effectiveness or L changes that could alter replication efficiency. Additionally, alternative builds help address practical issues such as whether diagnostic primers lost sensitivity due to mutations, as noted in the original Sierra Leone dataset. In summary, working with multiple genome builds not only expands our view of Ebola’s evolutionary dynamics but also connects sequence-level changes to critical public health questions such as diagnostics, therapeutics, and epidemic spread.
+For this weeks assignment, we primarily worked with KM233118 (Makona strain, Sierra Leone 2014) as the reference genome, with AF086833 (Mayinga strain, Zaire 1976) serving as a historic baseline. However, several alternative Ebola virus genome builds are available in NCBI that could be useful for answering different questions. Examples include NC_002549.1 (Mayinga, 1976, RefSeq), KR534588.1 (Liberia, 2014 mid-outbreak). Using these alternative genomes allows for comparative analyses across both geography and time. For instance, comparing Guinea, Liberia, and Sierra Leone isolates helps us investigate whether distinct mutations correlate with regional transmission, while comparing early (2014) and later (2015) genomes can highlight how rapidly the virus accumulated mutations during the epidemic. Prior studies, such as Gire et al, 2014 (https://www.science.org/doi/10.1126/science.1259657), showed that two distinct lineages introduced from Guinea seeded the Sierra Leone outbreak, while later work by Hoenen et al., 2015 (https://www.science.org/doi/10.1126/science.aaa5646) emphasized that many mutations were consistent with incomplete purifying selection. By extending analyses to genes like GP (glycoprotein) and L (RNA polymerase), we can ask whether mutations had functional consequences: for example, GP changes that might influence vaccine effectiveness or L changes that could alter replication efficiency. Additionally, alternative builds help address practical issues such as whether diagnostic primers lost sensitivity due to mutations, as noted in the original Sierra Leone dataset. In summary, working with multiple genome builds not only expands our view of Ebola’s evolutionary dynamics but also connects sequence-level changes to critical public health questions such as diagnostics, therapeutics, and epidemic spread.
+
+
+Coming from the perspective of the Department of Biobehavioral Health, these genomic comparisons also connect directly to questions of population health and disease dynamics. Tracking viral evolution is not only about understanding molecular mechanisms but also about linking mutations to epidemiological outcomes, community-level vulnerability, and the development of effective interventions. Alternative builds therefore help bridge the gap between genomic surveillance and real-world public health decisions, such as refining diagnostics, ensuring vaccine efficacy, and preparing for potential shifts in viral transmissibility or pathogenicity.
