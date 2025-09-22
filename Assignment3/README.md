@@ -54,7 +54,6 @@ max_len → the largest sequence length = 1,551,335 bp.
 grep -v "#" aquifex.gff | cut -f3 | sort | uniq -c
 ```
 Output:
-Output:
 1552 CDS
 1553 genes
 1553 mRNA
@@ -66,6 +65,7 @@ Output:
 1 chromosome, 1 region
 
 ### 7. Extract only genes and transcripts to a new GFF
+
 ``` bash
 grep -v "#" aquifex.gff | awk '$3=="gene" || $3=="transcript"' > aquifex_genes_transcripts.gff
 ```
@@ -75,6 +75,7 @@ This step was recommended by perplexity bot as IGV was not permitting direct ope
 
 ### 9. Extract CDS only
 This step will help in locating start and stop codon in IGV
+
 ```bash 
 grep -v "#" aquifex.gff | awk '$3=="CDS"' > aquifex_cds.gff
 
