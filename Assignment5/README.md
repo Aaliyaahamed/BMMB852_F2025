@@ -50,7 +50,9 @@ BASE="/mnt/d/BMMB852_F2025/Assignment5/week5"
 RAW="$BASE/raw"; QC="$BASE/qc"; LOG="$BASE/logs"
 mkdir -p "$RAW" "$QC" "$LOG"
 
+#  Download & Prepare Data
 echo "[i] Downloading subsets..."
+
 # Illumina (paired)
 if [ ! -f "$RAW/${SRR_ILLUMINA}_1.fastq.gz" ]; then
   fastq-dump --split-files -X "$ILLUM_SPOTS" -O "$RAW" "$SRR_ILLUMINA"
