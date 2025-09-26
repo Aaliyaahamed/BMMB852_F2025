@@ -93,10 +93,12 @@ column -t /mnt/d/BMMB852_F2025/Assignment5/week5/logs/read_stats.tsv
 ```
 
 ![alt text](image-2.png)
+
 _Why this matches expectations: 1,000 Illumina spots ≈ 200k bases (2×100 bp) ⇒ ~10×.
 ONT subset (800 × ~356 bp) ≈ 285k bases ⇒ ~15×_
 
 ->FastQC  metrics
+
 ![alt text](image-3.png)
 
 _Illumina reads are fixed-length (101 bp) with GC≈58% and high per-base quality. ONT shows variable read lengths (tens of bp up to ~10.5 kb in your subset) and lower GC (≈49%), which is typical for ONT and for small subsets_.
