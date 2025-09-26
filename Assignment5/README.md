@@ -35,17 +35,17 @@ bash week5/run.sh
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ---- IDs from the paper ----
+#  IDs from the paper
 BIOPROJECT="PRJNA257197"
 SRR_ILLUMINA="SRR1553607"    # Illumina HiSeq 2500, paired-end
 SRR_ONT="SRR2016557"         # Oxford Nanopore MinION, single-end
 
-# ---- ~10× settings ----
+#  ~10× settings 
 GENOME_BP=19000
 ILLUM_SPOTS=1000             # ~200 bp/spot => ~10×
 ONT_READS=800                # ~356 bp/read in my subset => >=10×
 
-# ---- Paths ----
+#  Paths 
 BASE="/mnt/d/BMMB852_F2025/Assignment5/week5"
 RAW="$BASE/raw"; QC="$BASE/qc"; LOG="$BASE/logs"
 mkdir -p "$RAW" "$QC" "$LOG"
