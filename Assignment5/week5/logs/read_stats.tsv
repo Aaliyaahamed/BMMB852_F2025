@@ -1,0 +1,4 @@
+sample	reads	total_bases	avg_len
+SRR1553607_1.fastq.gz	1000	101000	101.0
+SRR1553607_2.fastq.gz	1000	101000	101.0
+SRR2016557.fastq.gz	800	284999	356.2
