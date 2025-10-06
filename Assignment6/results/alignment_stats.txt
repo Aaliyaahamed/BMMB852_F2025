@@ -1,0 +1,21 @@
+--- Alignment and Coverage Report for SRR: SRR1553606 ---
+--- Mapping Statistics (samtools flagstat) ---
+10168 + 0 in total (QC-passed reads + QC-failed reads)
+10000 + 0 primary
+0 + 0 secondary
+168 + 0 supplementary
+0 + 0 duplicates
+0 + 0 primary duplicates
+4116 + 0 mapped (40.48% : N/A)
+3948 + 0 primary mapped (39.48% : N/A)
+10000 + 0 paired in sequencing
+5000 + 0 read1
+5000 + 0 read2
+3616 + 0 properly paired (36.16% : N/A)
+3924 + 0 with itself and mate mapped
+24 + 0 singletons (0.24% : N/A)
+0 + 0 with mate mapped to a different chr
+0 + 0 with mate mapped to a different chr (mapQ>=5)
+
+--- Coverage Statistics (samtools depth) ---
+Average coverage = 20.23x
