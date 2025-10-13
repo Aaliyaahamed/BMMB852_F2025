@@ -59,28 +59,7 @@ PRIMARY  := $(RESULTS_DIR)/$(SRR).primary.txt
 MAXDEPTH := $(RESULTS_DIR)/$(SRR).maxdepth.txt
 GENEFWD  := $(RESULTS_DIR)/$(SRR).gene_forward.txt
 
-# ===== Phony =====
-.PHONY: all tools genome reads links index align bigwig stats primary maxdepth gene_forward clean help
 
-# ===== Top-level =====
-all: tools $(BAM) $(BW) $(STATS)
-	@echo
-	@echo "[✓] All steps completed successfully for $(SRR). Outputs in $(RESULTS_DIR)/"
-
-help:
-	@echo "Examples:"
-	@echo "  make all SRR=SRR519924 ACC=U00096.3"
-	@echo "  make bigwig SRR=... ACC=... [BW_METHOD=deeptools|bedtools] [BIN_SIZE=10]"
-	@echo "  make primary  SRR=... ACC=..."
-	@echo "  make maxdepth SRR=... ACC=..."
-	@echo "  make gene_forward SRR=... ACC=... CHR=NC_000913.3 START=190000 END=195000"
-
-# ===== Tool checks =====
-tools:
-	@command -v bwa       >/dev/null 2>&1 || { echo "ERROR: bwa not found"; exit 1; }
-	@command -v samtools  >/dev/null 2>&1 || { echo "ERROR: samtools not found"; exit 1; }
-	@command -v wget      >/dev/null 2>&1 || command -v curl >/dev/null 2>&1 || { echo "ERROR: need wget or curl"; exit 1; }
-	@true
 
 # ===== Genome download + faidx =====
 $(GENOME_FA):
@@ -224,17 +203,6 @@ else
 	fi
 endif
 
-# Route B helper: bedtools -> bedGraphToBigWig (professor’s method)
-.PHONY: bedgraph
-bedgraph: $(BAM) $(GENOME_FAI)
-	@command -v bedtools        >/dev/null 2>&1 || { echo "ERROR: bedtools not found"; exit 1; }
-	@command -v bedGraphToBigWig>/dev/null 2>&1 || { echo "ERROR: bedGraphToBigWig not found"; exit 1; }
-	@echo "[-->] Generating bedGraph and BigWig via bedtools ..."
-	LC_ALL=C; bedtools genomecov -ibam "$(BAM)" -split -bg \
-	  | sort -k1,1 -k2,2n > "$(BEDGRAPH)"
-	bedGraphToBigWig "$(BEDGRAPH)" "$(GENOME_FAI)" "$(BW)"
-
-bigwig: $(BW)
 
 # ===== Core stats (for report) =====
 $(STATS): $(BAM)
@@ -286,8 +254,4 @@ clean:
 	@echo "[-->] Cleaning generated outputs ..."
 	rm -rf "$(GENOME_DIR)" "$(READS_DIR)" "$(RESULTS_DIR)" "$(TMP_DIR)"
 
-# --- override: disable normalize step ---
-.tmp/.links_ok:
-	@mkdir -p .tmp
-	@echo "[skip] Normalizing read filenames disabled."
-	@touch $$@
+
