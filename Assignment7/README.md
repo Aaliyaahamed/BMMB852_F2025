@@ -1,7 +1,7 @@
 # Week 7 Assignment: Reusable Alignment Makefile Report
 ### Aaliya Ahamed • BMMB852 • 2025-10-06
 
-This report documents the use of a reusable Makefile to automate a viral bioinformatics pipeline, generating aligned BAM files, QC statistics, and BigWig coverage tracks for two distinct SRA accessions for Ebola virus (KM034562.1).
+This weeks documents the use of a reusable Makefile to automate a viral bioinformatics pipeline, generating aligned BAM files, QC statistics, and BigWig coverage tracks for two distinct SRA accessions for Ebola virus (KM034562.1)
 
 # 1.  Makefile Usage
 The pipeline is executed using make all and is fully customized via command-line parameters, ensuring reusability. The Makefile automatically handles fetching the FASTA, fetching reads, indexing, alignment, sorting, QC (flagstat/idxstats), and BigWig generation.
@@ -47,6 +47,7 @@ make all SRR=SRR1553607 ACC=KM034562.1 SPOTS=0 THREADS=4
 # 2. IGV Visualization and Comparison
 ![alt text](image-3.png)
 ![alt text](image-4.png)
+
 IGV was used to visualize the GFF annotations (gene model), the BigWig coverage tracks, and the BAM alignments for both samples simultaneously to visually compare coverage uniformity and variant quality.
 
 WHOLE-GENOME OVERVIEW:
@@ -139,5 +140,4 @@ samtools depth results/SRR1553607.sorted.bam | sort -k3,3nr | head -n1
 # For Variant Confirmation
 bcftools mpileup -Ou -f genome/KM034562.1.fna results/SRR1553606.sorted.bam | bcftools call -mv -Oz -o results/SRR1553606.vcf.gz
 bcftools index results/SRR1553606.vcf.gz
-
 ```
