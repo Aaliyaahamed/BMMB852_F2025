@@ -94,7 +94,7 @@ Metric: Breadth > 10x\
 SRR1553606: 99.8%\
 SRR1553607: 92.6%
 
-## Briefly compare the statistics for the two BAM files.
+## Compare the statistics for the two BAM files.
 The statistics show a massive disparity in viral content. SRR1553606 successfully maps 46.49% of its primary reads, resulting in an average depth of 1790.1x. In contrast, SRR1553607 maps only 1.50% of its primary reads, leading to an average depth of only 25.0x. This suggests the latter contains a significantly higher proportion of non-target (host or environmental) sequences.
 
 ## How many primary alignments does each of your BAM files contain?
