@@ -16,7 +16,7 @@ EFETCH = efetch
 # Phony Targets
 .PHONY: all clean
 
-# 'all' depends on the final files you want to create.
+# after feedback 2
 all: $(RESULTS_DIR)/$(SAMPLE).sorted.bam \
      $(RESULTS_DIR)/$(SAMPLE).sorted.bam.bai \
      $(RESULTS_DIR)/$(SAMPLE).bw \
