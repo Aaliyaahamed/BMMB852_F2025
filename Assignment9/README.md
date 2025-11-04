@@ -1,5 +1,6 @@
 # Week 9 Assignment: Automate a large scale analysis
 ### Aaliya Ahamed • BMMB852 • 2025-10-26
+# redo it 
 
 This week's assignment automated the process of downloading, processing, and aligning high-throughput sequencing data. It used a Makefile to define the workflow for a single sample and leveraged GNU parallel to efficiently scale the analysis across multiple samples defined in a design.csv file.
 
