@@ -1,5 +1,6 @@
 # This is the complete Makefile for Assignment 11.
-
+# It runs the full variant pipeline and generates a
+# variant effect report using snpEff.
 
 # --- Shell Configuration ---
 SHELL := /bin/bash
@@ -12,8 +13,6 @@ BWA    := bwa
 SAM    := samtools
 SRA    := fastq-dump
 BCF    := bcftools
-BGZIP  := bgzip  # From htslib-tools
-TABIX  := tabix  # From htslib-tools
 
 # --- snpEff Configuration ---
 SNPEFF_JAR     := snpEff/snpEff.jar
@@ -35,14 +34,8 @@ REF_BWA     := $(REF).bwt
 # This is the name our FASTA file uses for the chromosome
 FASTA_CHR_NAME := KJ660346.2
 
-# GFF for IGV
-REF_GFF     := $(GENOME_DIR)/reference.gff
-REF_GFF_GZ  := $(REF_GFF).gz
-REF_GFF_IDX := $(REF_GFF_GZ).tbi
-
-# VCF for IGV
+# Final VCF
 MERGED_VCF     := $(RESULTS_DIR)/all_samples.merged.vcf.gz
-MERGED_VCF_IDX := $(MERGED_VCF).tbi
 
 # Files for snpEff
 CHROMS_MAP   := chrom_map.txt
@@ -63,13 +56,12 @@ help:
 	echo "  clean                                -> Removes all generated files."
 
 # --- Main Pipeline Target ---
-# This runs everything: builds the GFF, runs all samples, merges the VCF,
+# This runs everything: runs all samples, merges the VCF,
 # and finally runs the snpEff annotation.
-call_all: $(REF_GFF_IDX) $(SNPEFF_HTML)
+call_all: $(SNPEFF_HTML)
 	echo "\n[COMPLETE] I have finished the full pipeline!"
-	echo "  For IGV:    $(MERGED_VCF)"
-	echo "  For snpEff: $(SNPEFF_HTML)"
-	echo "  Annotated VCF: $(SNPEFF_VCF)"
+	echo "  Your snpEff report is at: $(SNPEFF_HTML)"
+	echo "  Your annotated VCF is at: $(SNPEFF_VCF)"
 
 # --- snpEff Annotation Pipeline ---
 # This target creates the HTML report.
@@ -109,7 +101,7 @@ $(MERGED_VCF): run_samples
 	$(BCF) merge -Oz -o $(MERGED_VCF) $$VCFS
 	echo "Merging complete. Now indexing the final VCF..."
 	$(BCF) index -t $(MERGED_VCF)
-	echo "Done! Your master VCF for IGV is: $(MERGED_VCF)"
+	echo "Done! Your master VCF is: $(MERGED_VCF)"
 
 # This is a hidden target to make merge_vcf work
 merge_vcf: $(MERGED_VCF)
@@ -152,19 +144,11 @@ $(FASTQ):
 	$(SRA) -X 10000 -O $(DATA_DIR) $(SRR)
 
 # --- Reference Genome and Annotation Rules ---
-# This rule downloads, CLEANS, sorts, and indexes the GFF for IGV
-$(REF_GFF_IDX): $(REF_GFF)
-	echo "I'm compressing and indexing the GFF file for IGV..."
-	# Remove comments AND blank lines (the fix!)
-	grep -v '^#' $(REF_GFF) | grep -v '^$$' | sort -k1,1 -k4,4n > $(REF_GFF).sorted
-	mv $(REF_GFF).sorted $(REF_GFF)
-	$(BGZIP) -f $(REF_GFF)
-	$(TABIX) -f -p gff $(REF_GFF_GZ)
-
-$(REF_GFF):
-	echo "I'm downloading the Ebola GFF annotation file..."
+# This rule downloads the reference.fasta if it is missing.
+$(REF):
+	echo "I'm downloading the Ebola reference genome..."
 	mkdir -p $(GENOME_DIR)
-	wget -O $(REF_GFF) "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.cgi?db=nuccore&id=KJ660346.2&rettype=gff3&retmode=text"
+	wget -O $(REF) "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.cgi?db=nuccore&id=KJ660346.2&rettype=fasta&retmode=text"
 
 $(REF_BWA): $(REF)
 	echo "Building BWA index..."
@@ -177,5 +161,5 @@ $(REF_FAI): $(REF)
 # --- Clean Rule ---
 clean:
 	echo "Cleaning up all generated directories and files..."
-	rm -rf $(ALIGN_DIR) $(DATA_DIR) $(RESULTS_DIR) $(GENOME_DIR)/*.gff* $(CHROMS_MAP)
+	rm -rf $(ALIGN_DIR) $(DATA_DIR) $(RESULTS_DIR) $(CHROMS_MAP)
 	echo "Cleanup complete."
