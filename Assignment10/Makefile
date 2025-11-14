@@ -67,6 +67,26 @@ $(MERGED_VCF): run_samples
 # This is a hidden target to make merge_vcf work
 merge_vcf: $(MERGED_VCF)
 
+# --- Reference Genome Rules (FIXED) ---
+# These rules build the indexes. They both depend on the reference file.
+$(REF_BWA): $(REF)
+	echo "Building BWA index..."
+	$(BWA) index $(REF)
+
+$(REF_FAI): $(REF)
+	echo "Building FASTA index..."
+	$(SAM) faidx $<
+
+# This rule downloads the reference file.
+# It explicitly depends on the GENOME_DIR target.
+$(REF): $(GENOME_DIR)
+	echo "I'm downloading the Ebola reference genome..."
+	wget -O $(REF) "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.cgi?db=nuccore&id=KJ660346.2&rettype=fasta&retmode=text"
+
+# This rule creates the directory. It is a prerequisite for $(REF).
+$(GENOME_DIR):
+	mkdir -p $(GENOME_DIR)
+
 # --- Per-sample derived variables ---
 FASTQ      := $(DATA_DIR)/$(SRR).fastq
 BAM_FILE   := $(ALIGN_DIR)/$(SAMPLE).bam
@@ -76,6 +96,7 @@ VCF_FILE   := $(RESULTS_DIR)/$(SAMPLE).vcf.gz
 VCF_INDEX  := $(VCF_FILE).tbi
 
 # --- File-Generating Rules (Per-Sample) ---
+# This is the target you run from the command line
 call: $(VCF_FILE) $(VCF_INDEX)
 	echo "Done: Finished call for $(SAMPLE) -> $(VCF_FILE)"
 
@@ -96,30 +117,18 @@ $(BAM_INDEX): $(SORTED_BAM)
 $(SORTED_BAM): $(BAM_FILE)
 	$(SAM) sort $< -o $@
 
+# This rule now correctly depends on the reference indexes
 $(BAM_FILE): $(FASTQ) $(REF_BWA)
 	mkdir -p $(ALIGN_DIR)
 	$(BWA) mem $(REF) $< | $(SAM) view -bS - > $@
 
-$(FASTQ):
-	mkdir -p $(DATA_DIR)
+# This rule depends on the DATA_DIR directory
+$(FASTQ): $(DATA_DIR)
 	$(SRA) -X 10000 -O $(DATA_DIR) $(SRR)
 
-# --- Reference Genome Rules ---
-# This rule builds the BWA index
-$(REF_BWA): $(REF)
-	echo "Building BWA index..."
-	$(BWA) index $(REF)
-
-# This rule builds the FASTA index
-$(REF_FAI): $(REF)
-	echo "Building FASTA index..."
-	$(SAM) faidx $<
-
-# What i fixed  from peer review
-$(REF):
-	echo "I'm downloading the Ebola reference genome..."
-	mkdir -p $(GENOME_DIR)
-	wget -O $(REF) "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.cgi?db=nuccore&id=KJ660346.2&rettype=fasta&retmode=text"
+# This rule creates the data directory
+$(DATA_DIR):
+	mkdir -p $(DATA_DIR)
 
 # --- Clean Rule ---
 clean:
