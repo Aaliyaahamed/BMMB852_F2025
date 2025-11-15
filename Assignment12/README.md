@@ -58,7 +58,7 @@ Compare filtered calls against the benchmark
 🧾 Report performance metrics (TP, FP, FN, precision, recall)
 ```
 
-🎯 Filtering Criteria
+Filtering Criteria
 Final filter used:
 ``` bash
 QUAL > 10 & INFO/DP > 5
@@ -103,9 +103,8 @@ A machine learning caller (e.g., Mutect2, DeepVariant) would improve results
 
 Ouput Metrics
 ```bash
-### 📊 Performance Metrics Summary
+### Performance Metrics Summary
 
-### 📊 Performance Metrics Summary
 
 | Metric               | Value | Interpretation                                            
 | True Positives (TP)  |   0   | No variants called by `bcftools` matched the benchmark set.                      |
