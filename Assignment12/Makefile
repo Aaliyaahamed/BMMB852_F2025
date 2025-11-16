@@ -2,10 +2,7 @@
 # Somatic Variant Analysis (chr17:7M–9M)
 # Custom Makefile for TP53 region
 #
-# VERSION 3: What did i fix?
-#   - FIX: Downloads *only the region* for BAMs, not the full 90GB files.
-#   - FIX: Corrects bcftools filter syntax ('&&' to '&').
-#   - FIX: Creates tmp2 dir before touching files!!
+# VERSION 1: Strict Comparison (Narrow Region, Filters)
 # =====================================
 
 SHELL := /bin/bash
@@ -163,3 +160,124 @@ clean:
 
 clean-all:
 	rm -rf $(VCF) $(OUT) $(DATA)
+
+
+# VERSION 2: Relaxed Comparison (Wide Region, No Filters)
+# Purpose: Broader region & raw variant comparison
+# Why: Version 1 found 0 matches — this one is less conservative
+CHR_R4 := chr17
+START_R4 := 7650000
+END_R4 := 7680000
+INTERVAL_R4 := $(CHR_R4):$(START_R4)-$(END_R4)
+
+# --- Custom Paths ---
+RAW_DIR := relaxed_data
+GENOME_R4 := $(RAW_DIR)/grch38_r4.fasta.gz
+NORMAL_BAM_R4 := $(RAW_DIR)/hg008_normal_r4.bam
+TUMOR_BAM_R4 := $(RAW_DIR)/hg008_tumor_r4.bam
+
+VCF_DIR_R4 := relaxed_vcf
+OUT_R4 := relaxed_output
+
+VCF_NORMAL := $(VCF_DIR_R4)/normal_raw.vcf.gz
+VCF_TUMOR := $(VCF_DIR_R4)/tumor_raw.vcf.gz
+VCF_TUMOR_ONLY := $(VCF_DIR_R4)/tumor_only_raw.vcf.gz
+VCF_TP := $(VCF_DIR_R4)/match_gold.vcf.gz
+VCF_FP := $(VCF_DIR_R4)/extra_calls.vcf.gz
+VCF_FN := $(VCF_DIR_R4)/missed_gold.vcf.gz
+
+VCF_GOLD := $(VCF_DIR_R4)/gold_standard.vcf.gz
+VCF_GOLD_SUB := $(VCF_DIR_R4)/gold_tp53_region.vcf.gz
+
+# --- Main Target ---
+relaxed-all: $(OUT_R4)/metrics.txt
+
+# --- Reference Download ---
+$(GENOME_R4):
+	mkdir -p $(RAW_DIR)
+	curl -L -C - $(REF_URL) -o $@
+	samtools faidx $@
+
+# --- BAM Subset ---
+$(NORMAL_BAM_R4):
+	mkdir -p $(RAW_DIR)
+	samtools view -b $(CTRL_URL) $(INTERVAL_R4) > $@
+	samtools index $@
+
+$(TUMOR_BAM_R4):
+	mkdir -p $(RAW_DIR)
+	samtools view -b $(TUMOR_URL) $(INTERVAL_R4) > $@
+	samtools index $@
+
+
+# --- Variant Calling ---
+$(VCF_NORMAL): $(NORMAL_BAM_R4) $(GENOME_R4)
+	mkdir -p $(VCF_DIR_R4)
+	bcftools mpileup -f $(GENOME_R4) -r $(INTERVAL_R4) -d 100 $< | \
+	bcftools call -mv -Oz -o $@
+	tabix -p vcf $@
+
+$(VCF_TUMOR): $(TUMOR_BAM_R4) $(GENOME_R4)
+	mkdir -p $(VCF_DIR_R4)
+	bcftools mpileup -f $(GENOME_R4) -r $(INTERVAL_R4) -d 100 $< | \
+	bcftools call -mv -Oz -o $@
+	tabix -p vcf $@
+
+# --- Tumor-Only Variants ---
+$(VCF_TUMOR_ONLY): $(VCF_NORMAL) $(VCF_TUMOR)
+	mkdir -p $(VCF_DIR_R4)/temp
+	bcftools isec -p $(VCF_DIR_R4)/temp -n=2 $^
+	bcftools view -Oz -o $@ $(VCF_DIR_R4)/temp/0001.vcf
+	tabix -p vcf $@ || true
+	rm -rf $(VCF_DIR_R4)/temp
+
+# --- Gold Standard Download + Subset ---
+$(VCF_GOLD):
+	curl -L -C - $(GOLD_URL) -o $@
+	curl -L -C - $(GOLD_URL).tbi -o $@.tbi
+
+$(VCF_GOLD_SUB): $(VCF_GOLD)
+	bcftools view -r $(INTERVAL_R4) -Oz -o $@ $<
+	tabix -p vcf $@
+
+# --- Compare Variant Sets ---
+relaxed-compare: $(VCF_TUMOR_ONLY) $(VCF_GOLD_SUB)
+	mkdir -p $(VCF_DIR_R4)/comp
+	bcftools isec -p $(VCF_DIR_R4)/comp $(VCF_TUMOR_ONLY) $(VCF_GOLD_SUB)
+	bcftools view -Oz -o $(VCF_TP) $(VCF_DIR_R4)/comp/0002.vcf
+	bcftools view -Oz -o $(VCF_FP) $(VCF_DIR_R4)/comp/0000.vcf
+	bcftools view -Oz -o $(VCF_FN) $(VCF_DIR_R4)/comp/0001.vcf
+	tabix -p vcf $(VCF_TP)
+	tabix -p vcf $(VCF_FP)
+	tabix -p vcf $(VCF_FN)
+	rm -rf $(VCF_DIR_R4)/comp
+
+# --- Report Metrics ---
+$(OUT_R4)/metrics.txt: relaxed-compare
+	mkdir -p $(OUT_R4)
+	TP=$$(zgrep -vc "^#" $(VCF_TP) || true); \
+	FP=$$(zgrep -vc "^#" $(VCF_FP) || true); \
+	FN=$$(zgrep -vc "^#" $(VCF_FN) || true); \
+	echo "==== RELAXED VARIANT REPORT ====" > $@; \
+	echo "Region: $(INTERVAL_R4)" >> $@; \
+	echo "Filter: none (no quality filter applied)" >> $@; \
+	echo "--------------------------------" >> $@; \
+	echo "True Positives:  $$TP" >> $@; \
+	echo "False Positives: $$FP" >> $@; \
+	echo "False Negatives: $$FN" >> $@; \
+	if [ $$((TP + FP)) -gt 0 ]; then \
+		PREC=$$(awk "BEGIN {printf \"%.2f\", 100 * $$TP / ($$TP + $$FP)}"); \
+		echo "Precision: $$PREC%" >> $@; \
+	else echo "Precision: N/A" >> $@; fi; \
+	if [ $$((TP + FN)) -gt 0 ]; then \
+		RECALL=$$(awk "BEGIN {printf \"%.2f\", 100 * $$TP / ($$TP + $$FN)}"); \
+		echo "Recall: $$RECALL%" >> $@; \
+	else echo "Recall: N/A" >> $@; fi
+	cat $@
+
+# --- Cleanup ---
+relaxed-clean:
+	rm -rf $(VCF_DIR_R4) $(OUT_R4)
+
+relaxed-clean-all:
+	rm -rf $(VCF_DIR_R4) $(OUT_R4) $(RAW_DIR)

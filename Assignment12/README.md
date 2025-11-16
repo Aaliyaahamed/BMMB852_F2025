@@ -144,7 +144,7 @@ Assignment12/
 ├── vcfs/                  # VCF files (raw, filtered)
 ├── evals/                 # Evaluation results (TP, FP, FN)
 └── reports/               # Summary output
-🧪 Tools Used
+Tools Used
 bcftools (variant calling, filtering, comparison)
 
 samtools (indexing, subsetting BAMs)
@@ -155,3 +155,56 @@ make (workflow automation)
 
 awk, bash (report generation)
 ```
+# Extended Experiment:Relaxed Pipeline
+
+Changes in relaxed analysis:
+
+No filters applied and Smaller TP53‑focused window. 
+```bash
+chr17:7650000–7680000
+```
+Relaxed Pipeline Usage
+```bash
+make relaxed-all
+```
+Cleanup:
+```bash
+make relaxed-clean
+make relaxed-clean-all
+```
+## Results
+```bash
+True Positives:  0
+False Positives: 46
+False Negatives: 1
+
+Precision: 0.00%
+Recall:    0.00%
+```
+## File Structue 
+```bash
+Assignment12/
+├── Makefile               # Full pipeline (strict + relaxed)
+├── README.md              # This file
+├── data/                  # BAMs and reference
+├── results/               # Strict filtered VCFs and comparison
+├── report/                # Summary metrics (strict)
+├── relaxed_data/          # Relaxed BAMs and reference
+├── relaxed_vcf/           # Raw VCFs (relaxed)
+├── relaxed_output/        # Relaxed metrics and comparison
+```
+
+### After getting 0 true positives and 6 false negatives in my original pipeline, I realized my filters were likely too strict for detecting low-frequency somatic mutations. So, I created a relaxed version that: 
+used a smaller region focused around known TP53 variants
+
+Removed all filtering (no QUAL or DP thresholds)
+
+I hoped this would at least recover some true positives, even at the cost of more false positives.
+
+What I got:
+
+1. Fewer false positives (only 46, due to smaller region)
+
+2. Still 0 true positives — even without filters
+
+3. 1 false negative (gold standard missed)
