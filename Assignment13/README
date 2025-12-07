@@ -1,0 +1,45 @@
+# Week 13 Assignment: RNA seq count matrix
+### Aaliya Ahamed • BMMB852 • 2025-12-06
+## Usage
+To reproduce this analysis, run the following commands in the terminal. These steps download the data, align the reads, and generate the final expression matrix.
+```
+# 1. Setup: Download reference genome and read data
+make setup
+
+# 2. Alignment & Visualization: Process all 6 samples using a loop
+for ID in HBR_1_R1 HBR_2_R1 HBR_3_R1 UHR_1_R1 UHR_2_R1 UHR_3_R1
+do
+    echo "Processing $ID..."
+    make align SAMPLE=$ID
+    make bigwig SAMPLE=$ID
+done
+
+# 3. Quantification: Count reads mapping to genes
+make count_features
+
+# 4. Matrix Generation: Format the final CSV for analysis
+make matrix
+```
+
+## Analysis Summary
+
+In this assignment, I processed RNA-sequencing data to create a "transcriptomic layer" for multi-omics integration. The goal was to convert raw sequencing reads into a quantitative matrix that allows us to compare gene expression between two distinct biological conditions: Brain Tissue (HBR) and Cancer Cell Lines (UHR).
+
+What I Did:
+Data Acquisition: I utilized a subset of the Griffith et al. (2015) dataset, focusing specifically on Chromosome 22. This allowed for rapid processing while retaining enough biological data to observe real differences between the samples.
+
+Alignment: Using BWA-MEM, I mapped the raw reads from the three Brain samples and three Cancer samples to the human reference genome. This step determined exactly where on Chromosome 22 each RNA fragment originated.
+
+Visualization: I converted the alignment files into BigWig format to visualize them in IGV. I color-coded the tracks (Green for Brain, Red for Cancer) to make the biological differences immediately visible.
+
+Quantification: I used featureCounts to count how many reads overlapped with known genes. This generated a count matrix (final_matrix.csv). 
+
+## LARGE
+![alt text](image.png)
+```
+To validate the biological identity of the samples, we examined the gene LARGE1 (labeled "LARGE").
+
+Biological Context: The LARGE1 gene is critical for the proper function of alpha-dystroglycan, particularly in brain development and neural migration. Therefore, we expected high expression in the Brain samples (HBR).
+
+Observation: The IGV visualization (Figure 1) confirms this. The HBR samples (Green tracks) show significant read density at the LARGE locus, while the UHR cancer cell lines (Red tracks) show negligible expression.
+```
